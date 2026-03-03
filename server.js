@@ -18,15 +18,15 @@ app.get("/", (req, res) => {
 /* Chat endpoint */
 app.post("/chat", async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message,threadId } = req.body;
 
-    if (!message) {
+    if (!message && !threadId) {
       return res.status(400).json({
-        error: "Message is required",
+        error: "Message and ThreadId is required",
       });
     }
 
-    const result = await generate(message);
+    const result = await generate(message,threadId);
 
     res.status(200).json({
       response: result,

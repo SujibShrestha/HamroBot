@@ -5,9 +5,11 @@ import NodeCache from "node-cache";
 config();
 const tvly = tavily({ apiKey: process.env.TAVILY_API_KEY });
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-const myCache = new NodeCache();
+const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 }); //time to leave 24 hours
 
-export async function generate(userMessage) {
+
+
+export async function generate(userMessage,threadId) {
   const baseMessages = [
     {
       role: "system",
@@ -76,7 +78,7 @@ Current Date and Time: ${new Date().toUTCString()}
     },
   ];
 
-  const messages = baseMessages;
+  const messages =myCache.get(threadId) ?? baseMessages;
 
   messages.push({
     role: "user",
@@ -125,6 +127,7 @@ Current Date and Time: ${new Date().toUTCString()}
 
     if (!toolCalls) {
       // here we end the chatbot response
+      myCache.set(threadId,messages,60*60*24)
       return completions.choices[0].message.content;
     }
 

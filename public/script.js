@@ -68,20 +68,25 @@ function addBotMessage(text) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-export const BACKEND_URL =
+const BACKEND_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:3000/chat"
     : "https://hamrobot-api.onrender.com/chat"; // your backend url
 
+
 async function callServer(input) {
-  const res = await fetch(BACKEND_URL, {
+const threadId = localStorage.getItem("threadId") ?? (Date.now().toString(36) + Math.random().toString(36).substring(3,18));
+  localStorage.setItem("threadId", threadId);
+
+  const res = await fetch("http://localhost:3000/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ message: input }),
+    body: JSON.stringify({ message: input,threadId
+      
+     }),
   });
-
   if (!res.ok) {
     throw new Error("Error while generating the response");
   }
