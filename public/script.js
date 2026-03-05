@@ -71,14 +71,14 @@ function addBotMessage(text) {
 const BACKEND_URL =
   window.location.hostname === "localhost"
     ? "http://localhost:3000/chat"
-    : "https://hamrobot-api.onrender.com/chat"; // your backend url
+    : "https://hamro-bot.vercel.app/chat"; // your backend url
 
 
 async function callServer(input) {
 const threadId = localStorage.getItem("threadId") ?? (Date.now().toString(36) + Math.random().toString(36).substring(3,18));
   localStorage.setItem("threadId", threadId);
 
-  const res = await fetch("http://localhost:3000/chat", {
+  const res = await fetch(BACKEND_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
